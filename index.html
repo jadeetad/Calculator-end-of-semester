@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Simple Calculator</title>
+</head>
+<body>
+    <div id="calculator">
+        <div id="display-wrapper">
+            <input type="text" id="canvas" readonly />
+            <div id="result"></div>
+        </div>
+        <div id="keys">
+            <!-- Top row -->
+            <button class="function" onclick="clearDisplay()">AC</button>
+            <button class="function" onclick="toggleSign()">±</button>
+            <button class="function" onclick="applyPercentage()">%</button>
+            <button class="operator" onclick="appendToDisplay('/')">÷</button>
+
+            <!-- Row 2 -->
+            <button onclick="appendToDisplay('7')">7</button>
+            <button onclick="appendToDisplay('8')">8</button>
+            <button onclick="appendToDisplay('9')">9</button>
+            <button class="operator" onclick="appendToDisplay('*')">×</button>
+
+            <!-- Row 3 -->
+            <button onclick="appendToDisplay('4')">4</button>
+            <button onclick="appendToDisplay('5')">5</button>
+            <button onclick="appendToDisplay('6')">6</button>
+            <button class="operator" onclick="appendToDisplay('-')">−</button>
+
+            <!-- Row 4 -->
+            <button onclick="appendToDisplay('1')">1</button>
+            <button onclick="appendToDisplay('2')">2</button>
+            <button onclick="appendToDisplay('3')">3</button>
+            <button class="operator" onclick="appendToDisplay('+')">+</button>
+
+            <!-- Bottom row -->
+            <button onclick="appendToDisplay('0')"><i class="material-icons">calculate</i></button>
+            <button onclick="appendToDisplay('0')">0</button>
+            <button onclick="appendToDisplay('.')">.</button>
+            <button class="operator" onclick="calculate()">=</button>
+        </div> 
+    </div> 
+    <script src="main.js"></script>
+</body>
+</html>
