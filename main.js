@@ -1,81 +1,70 @@
-
-
 const canvas = document.getElementById("canvas");
-const clearBtn = document.getElementById("clear-btn");
+const clearBtn = document.querySelector(".function"); // AC button
+let currentValue = ""; // Tracks input
 
-//  numbers appear with commas
+// Format numbers with commas
 function formatWithCommas(number) {
-    return Number(number).toLocaleString();
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-// Resizes the font based on input length
-function resizeFont() {
-    const maxFontSize = 3;
-    const minFontSize = 1;
-     // Minimum font size
-    const lengthThreshold = 10;
-     // Length at which font size reduces
-    const inputLength = canvas.value.length;
-
-    if (inputLength > lengthThreshold) {
-        const newFontSize = Math.max(
-            minFontSize,
-            maxFontSize - (inputLength - lengthThreshold) * 0.2
-        );
-        canvas.style.fontSize = `${newFontSize}rem`;
-    } else {
-        canvas.style.fontSize = `${maxFontSize}rem`;
-    }
+// Update the display
+function updateDisplay(value) {
+    canvas.textContent = formatWithCommas(value || "0");
+    resizeText();
 }
 
-// Append input to display
+// Append to the display
 function appendToDisplay(input) {
-    canvas.value += input;
-    canvas.value = formatWithCommas(canvas.value.replace(/,/g, ''));
-    resizeFont();
+    if (currentValue === "0" && input !== ".") currentValue = ""; // Clear leading zero
+    currentValue += input;
+    updateDisplay(currentValue);
     updateClearButton();
 }
 
-// ac/c Clear the display
-function clearDisplay() {
-    canvas.value = ""; // Clear the display
-    resizeFont(); // Reset font size
-    updateClearButton(); // Update button text
+// Resize text to fit within the canvas
+function resizeText() {
+    const canvasWidth = canvas.offsetWidth; // Get canvas width
+    const fontSize = Math.min(48, canvasWidth / currentValue.length * 1.5); // Adjust font size
+    canvas.style.fontSize = `${Math.max(fontSize, 18)}px`; // Minimum font size is 18px
 }
 
-// Calculates the result
+// Clear the display
+function clearDisplay() {
+    currentValue = "";
+    updateDisplay(currentValue);
+    updateClearButton();
+}
+
+// Perform the calculation
 function calculate() {
     try {
-        const result = eval(canvas.value.replace(/,/g, ''));
-        canvas.value = formatWithCommas(result);
+        const result = eval(currentValue.replace(/,/g, "")); // Remove commas before evaluation
+        currentValue = result.toString();
+        updateDisplay(currentValue);
     } catch {
-        canvas.value = "Error";
+        canvas.textContent = "Error";
+        currentValue = "";
     }
-    resizeFont();
-    updateClearButton();
 }
 
-// Updates the  "AC" button to "C" dynamically
+// Update the "AC" to "C"
 function updateClearButton() {
-    clearBtn.textContent = canvas.value.length > 0 ? "C" : "AC";
+    clearBtn.textContent = currentValue ? "C" : "AC";
 }
 
-// enables the keyboard to input values
+// Handle keyboard input
 document.addEventListener("keydown", (event) => {
     const validKeys = "0123456789+-*/.%";
-    const key = event.key;
-
-    if (validKeys.includes(key)) {
-        appendToDisplay(key);
-    } else if (key === "Enter") {
-        event.preventDefault(); // Prevent default browser action
+    if (validKeys.includes(event.key)) {
+        appendToDisplay(event.key);
+    } else if (event.key === "Enter") {
+        event.preventDefault();
         calculate();
-    } else if (key === "Backspace") {
-        canvas.value = canvas.value.slice(0, -1);
-        canvas.value = formatWithCommas(canvas.value.replace(/,/g, ''));
-        resizeFont();
+    } else if (event.key === "Backspace") {
+        currentValue = currentValue.slice(0, -1);
+        updateDisplay(currentValue);
         updateClearButton();
-    } else if (key === "Escape") {
+    } else if (event.key === "Escape") {
         clearDisplay();
     }
 });
